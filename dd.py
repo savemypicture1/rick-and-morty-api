@@ -18,7 +18,6 @@ uuu = qwe[0] * qwe[2]
 print(uuu)
 
 
-response = requests.get('https://rickandmortyapi.com/api')
-response_data = response.json()
-print(type(response_data))
-validate(response_data, BASE_PAGE_SCHEMA)
+# response = requests.get('https://rickandmortyapi.com/api')
+# response_data = response.json()
+# print(type(response_data))

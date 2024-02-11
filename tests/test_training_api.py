@@ -119,6 +119,7 @@ def test_multiple_characters():
     response_data = response.json()
     character_ids = []
     for character in response_data:
+        validate(character, CHARACTER_SCHEMA)
         character_ids.append(character['id'])
 
     assert response.status_code == 200, 'Wrong status code'
@@ -141,6 +142,7 @@ def test_single_correct_character():
     response_data = response.json()
     character_ids = []
     for character in response_data:
+        validate(character, CHARACTER_SCHEMA)
         character_ids.append(character['id'])
 
     assert response.status_code == 200, 'Wrong status code'

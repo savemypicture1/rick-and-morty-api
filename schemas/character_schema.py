@@ -6,13 +6,13 @@ CHARACTER_SCHEMA = {
         'name': {'type': 'string'},
         'status': {'type': 'string'},
         'species': {'type': 'string'},
-        'type': {'type': 'string', 'nullable': True},
+        'type': {'type': 'string'},
         'gender': {'type': 'string'},
         'origin': {
             'type': 'object',
             'properties': {
                 'name': {'type': 'string'},
-                'url': {'type': 'string', 'nullable': True}
+                'url': {'type': 'string'}
             },
         },
         'location': {
@@ -28,6 +28,7 @@ CHARACTER_SCHEMA = {
             'items': {'type': 'string'}
         },
         'url': {'type': 'string'},
-        'created': {'type': 'string'}
-    }
+        'created': {'type': 'string', 'format': 'date-time'}
+    },
+    'required': ['id', 'name', 'status', 'species', 'type', 'gender', 'origin', 'location', 'image', 'episode', 'url', 'created']
 }

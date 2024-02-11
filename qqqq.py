@@ -6,9 +6,19 @@ from schemas.character_schema import CHARACTER_SCHEMA
 response = requests.get('https://rickandmortyapi.com/api/character')
 response_data = response.json()
 
+pprint(response_data)
+print('*****************************************************')
 
 
-characters = []
+print(type(response_data))
+
+
+# for item in response_data:
+#     validate(response_data, CHARACTER_SCHEMA)
+
+
+
+# characters = []
 
 # for character in response_data['results']:
 #     characters.append(character)
@@ -16,7 +26,7 @@ characters = []
 
 # pprint(characters)
 # pprint(len(characters))
-pprint(response_data['results'][1])
+# pprint(response_data['results'][1])
 
 # assert response_data['count'] == 826
 # assert response_data['pages'] == 42
