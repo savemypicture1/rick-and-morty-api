@@ -1,5 +1,8 @@
 import requests
 import pytest
+from jsonschema import validate
+from schemas.base_page_schema import BASE_PAGE_SCHEMA
+from schemas.character_schema import CHARACTER_SCHEMA
 
 
 # ENDPOINT: BASE_PAGE
@@ -13,6 +16,7 @@ def test_get_base_page():
     response = requests.get('https://rickandmortyapi.com/api')
     response_data = response.json()
 
+    validate(response_data, BASE_PAGE_SCHEMA)
     assert response.status_code == 200, 'Wrong status code'
     assert result == response_data, 'Result does not match'
 
@@ -29,6 +33,7 @@ def test_post_base_page():
 def test_get_all_characters():
     response = requests.get('https://rickandmortyapi.com/api/character')
     response_data = response.json()
+
 
     assert response.status_code == 200, 'Wrong status code'
     assert response_data['info']['count'] == 826
@@ -52,6 +57,7 @@ def test_current_page():
     assert response.status_code == 200, 'Wrong status code'
     assert response_data['info']['count'] == 826
     assert response_data['info']['pages'] == 42
+    assert len(response_data['results']) == 20
 
 
 @pytest.mark.xfail(reason="500 from the server")
@@ -69,6 +75,7 @@ def test_get_a_single_character():
     response_data = response.json()
     character_id = response_data['id']
 
+    validate(response_data, CHARACTER_SCHEMA)
     assert response.status_code == 200, 'Wrong status code'
     assert character_id == 5
 
