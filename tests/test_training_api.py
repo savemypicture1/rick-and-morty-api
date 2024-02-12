@@ -3,6 +3,7 @@ import pytest
 from jsonschema import validate
 from schemas.base_page_schema import BASE_PAGE_SCHEMA
 from schemas.character_schema import CHARACTER_SCHEMA
+from schemas.info_schema import INFO_SCHEMA
 
 
 # ENDPOINT: BASE_PAGE
@@ -33,11 +34,14 @@ def test_post_base_page():
 def test_get_all_characters():
     response = requests.get('https://rickandmortyapi.com/api/character')
     response_data = response.json()
-
+    validate(response_data['info'], INFO_SCHEMA)
+    for character in response_data['results']:
+        validate(character, CHARACTER_SCHEMA)
 
     assert response.status_code == 200, 'Wrong status code'
     assert response_data['info']['count'] == 826
     assert response_data['info']['pages'] == 42
+    assert response_data['info']['prev'] is None
     assert len(response_data['results']) == 20
 
 
@@ -51,8 +55,11 @@ def test_post_get_all_characters():
 
 # ENDPOINT: PAGES
 def test_current_page():
-    response = requests.get('https://rickandmortyapi.com/api/character/?page=2')
+    response = requests.get('https://rickandmortyapi.com/api/character?page=21')
     response_data = response.json()
+    validate(response_data['info'], INFO_SCHEMA)
+    for character in response_data['results']:
+        validate(character, CHARACTER_SCHEMA)
 
     assert response.status_code == 200, 'Wrong status code'
     assert response_data['info']['count'] == 826
@@ -60,9 +67,31 @@ def test_current_page():
     assert len(response_data['results']) == 20
 
 
+def test_last_page():
+    response = requests.get('https://rickandmortyapi.com/api/character?page=42')
+    response_data = response.json()
+    validate(response_data['info'], INFO_SCHEMA)
+    for character in response_data['results']:
+        validate(character, CHARACTER_SCHEMA)
+
+    assert response.status_code == 200, 'Wrong status code'
+    assert response_data['info']['count'] == 826
+    assert response_data['info']['pages'] == 42
+    assert response_data['info']['next'] is None
+    assert len(response_data['results']) == 20
+
+
 @pytest.mark.xfail(reason="500 from the server")
 def test_incorrect_page():
-    response = requests.get('https://rickandmortyapi.com/api/character/?page=43')
+    response = requests.get('https://rickandmortyapi.com/api/character?page=43')
+    response_data = response.json()
+
+    assert response.status_code == 404, 'Wrong status code'
+    assert response_data['error'] == 'There is nothing here.', 'Wrong/No error message'
+
+
+def test_post_page():
+    response = requests.post('https://rickandmortyapi.com/api/character?page=43')
     response_data = response.json()
 
     assert response.status_code == 404, 'Wrong status code'

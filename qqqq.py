@@ -6,9 +6,11 @@ from schemas.character_schema import CHARACTER_SCHEMA
 response = requests.get('https://rickandmortyapi.com/api/character')
 response_data = response.json()
 
-pprint(response_data)
-print('*****************************************************')
-
+# pprint(response_data['info'])
+# pprint(response_data['results'][])
+print(response.status_code)
+for chatacter in response_data['results']:
+    validate(chatacter, CHARACTER_SCHEMA)
 
 print(type(response_data))
 
