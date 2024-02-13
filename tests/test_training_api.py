@@ -89,13 +89,49 @@ def test_post_page():
 
 
 # ENDPOINT: GET A SINGLE CHARACTER
-def test_get_a_single_character():
-    response = requests.get('https://rickandmortyapi.com/api/character/5')
+
+
+def test_min_negative_character_id():
+    response = requests.get('https://rickandmortyapi.com/api/character/0')
+    response_data = response.json()
+
+    assert response.status_code == 404, 'Wrong status code'
+    assert response_data['error'] == 'Character not found', 'Wrong/No error message'
+
+
+def test_get_a_first_character():
+    response = requests.get('https://rickandmortyapi.com/api/character/1')
     response_data = response.json()
     validate(response_data, CHARACTER_SCHEMA)
 
     assert response.status_code == 200, 'Wrong status code'
-    assert response_data['id'] == 5, 'Wrong character id'
+    assert response_data['id'] == 1, 'Wrong character id'
+
+
+def test_get_a_single_character():
+    response = requests.get('https://rickandmortyapi.com/api/character/400')
+    response_data = response.json()
+    validate(response_data, CHARACTER_SCHEMA)
+
+    assert response.status_code == 200, 'Wrong status code'
+    assert response_data['id'] == 400, 'Wrong character id'
+
+
+def test_get_a_last_character():
+    response = requests.get('https://rickandmortyapi.com/api/character/826')
+    response_data = response.json()
+    validate(response_data, CHARACTER_SCHEMA)
+
+    assert response.status_code == 200, 'Wrong status code'
+    assert response_data['id'] == 826, 'Wrong character id'
+
+
+def test_max_negative_character_id():
+    response = requests.get('https://rickandmortyapi.com/api/character/827')
+    response_data = response.json()
+
+    assert response.status_code == 404, 'Wrong status code'
+    assert response_data['error'] == 'Character not found', 'Wrong/No error message'
 
 
 @pytest.mark.skip
@@ -108,22 +144,6 @@ def test_id_for_all_characters():
 
         assert response.status_code == 200, 'Wrong status code'
         assert response_data['id'] == character_id, 'Wrong character id'
-
-
-def test_min_negative_character_id():
-    response = requests.get('https://rickandmortyapi.com/api/character/0')
-    response_data = response.json()
-
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'Character not found', 'Wrong/No error message'
-
-
-def test_max_negative_character_id():
-    response = requests.get('https://rickandmortyapi.com/api/character/827')
-    response_data = response.json()
-
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'Character not found', 'Wrong/No error message'
 
 
 def test_post_character_id():
@@ -166,6 +186,15 @@ def test_multiple_characters():
     assert character_ids[1] == 826, 'Wrong character id'
 
 
+def test_ignore_zero_in_id():
+    response = requests.get('https://rickandmortyapi.com/api/character/0745')
+    response_data = response.json()
+    validate(response_data, CHARACTER_SCHEMA)
+
+    assert response.status_code == 200, 'Wrong status code'
+    assert response_data['id'] == 745, 'Wrong character id'
+
+
 @pytest.mark.xfail(reason="200 from the server")
 def test_negative_multiple_characters():
     response = requests.get('https://rickandmortyapi.com/api/character/0,827')
@@ -175,7 +204,7 @@ def test_negative_multiple_characters():
     assert response_data['error'] == 'There is nothing here.', 'Wrong/No error message'
 
 
-def test_single_correct_character():
+def test_ignore_negative_multiple_character():
     response = requests.get('https://rickandmortyapi.com/api/character/200,827')
     response_data = response.json()
     character_ids = []
@@ -203,6 +232,7 @@ def test_filter_by_name():
     validate(response_data['info'], INFO_SCHEMA)
     for character in response_data['results']:
         validate(character, CHARACTER_SCHEMA)
+        assert character['name'] == 'Rick Sanchez', 'Wrong name'
 
     assert response.status_code == 200, 'Wrong status code'
     assert response_data['info']['count'] == 4, 'Wrong count characters'
@@ -239,8 +269,35 @@ def test_filter_by_alive_status():
         assert response_data['info']['pages'] == count_pages, 'Wrong count pages'
 
 
-def test_filter_by_dead_status():
+def test_negative_status():
     pass
+
+
+def test_filter_by_dead_status():
+    global response_data
+    url = 'https://rickandmortyapi.com/api/character?status=dead'
+    count_characters = 0
+    count_pages = 0
+
+    while url:
+        response = requests.get(url)
+        response_data = response.json()
+        validate(response_data['info'], INFO_SCHEMA)
+        url = response_data['info']["next"]
+        count_pages += 1
+        assert response.status_code == 200, 'Wrong status code'
+
+        for character in response_data['results']:
+            validate(character, CHARACTER_SCHEMA)
+            count_characters += 1
+            assert character['status'] == 'Dead'
+        if count_pages == 1:
+            assert response_data['info']['prev'] is None, 'Next page is available'
+        if count_pages == 15:
+            assert response_data['info']['next'] is None, 'Next page is available'
+    else:
+        assert response_data['info']['count'] == count_characters, 'Wrong count characters'
+        assert response_data['info']['pages'] == count_pages, 'Wrong count pages'
 
 
 def test_filter_by_unknown_status():
@@ -251,9 +308,16 @@ def test_filter_by_species():
     pass
 
 
+def test_negative_species():
+    pass
+
+
 def test_filter_by_type():
     pass
 
+
+def test_negative_type():
+    pass
 
 def test_filter_by_female_gender():
     pass
