@@ -2,33 +2,33 @@ from pprint import pprint
 import requests
 from jsonschema import validate
 from schemas.character_schema import CHARACTER_SCHEMA
+from schemas.info_schema import INFO_SCHEMA
 
-response = requests.get('https://rickandmortyapi.com/api/character')
-response_data = response.json()
+# ids = range(1, 827)
+# response = requests.get(f'https://rickandmortyapi.com/api/character/{ids}')
+# response_data = response.json()
 
-# pprint(response_data['info'])
-# pprint(response_data['results'][])
-print(response.status_code)
-for chatacter in response_data['results']:
-    validate(chatacter, CHARACTER_SCHEMA)
+for character_id in range(1, 827):
+    url = f'https://rickandmortyapi.com/api/character/{character_id}'
+    response = requests.get(url)
+    response_data = response.json()
+    validate(response_data, CHARACTER_SCHEMA)
 
-print(type(response_data))
-
-
-# for item in response_data:
-#     validate(response_data, CHARACTER_SCHEMA)
-
+    assert response.status_code == 200, 'Wrong status code'
+    assert response_data['id'] == character_id, 'Wrong character id'
 
 
-# characters = []
+# while response:
+#     response = response_data['info']["next"]
+#     for character in response_data['results']:
+#         print(response)
+#         assert character['status'] == 'Alive'
 
-# for character in response_data['results']:
-#     characters.append(character)
-#     validate(characters, CHARACTER_SCHEMA)
-
-# pprint(characters)
-# pprint(len(characters))
-# pprint(response_data['results'][1])
-
-# assert response_data['count'] == 826
-# assert response_data['pages'] == 42
+# # print(type(response_data))
+# validate(response_data['info'], INFO_SCHEMA)
+# # for character in response_data['results']:
+# #     validate(character, CHARACTER_SCHEMA)
+#
+# print(response.status_code)
+# print(len(response_data['results']))
+# print(response_data['results'])
