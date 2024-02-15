@@ -1,16 +1,16 @@
 from pydantic import BaseModel, AnyUrl
 from datetime import datetime
-from typing import List
+from typing import List, Union
 
 
-class OriginSchema(BaseModel):
+class Origin(BaseModel):
     name: str
-    url: AnyUrl
+    url: Union[AnyUrl, str]
 
 
-class LocationSchema(BaseModel):
+class Location(BaseModel):
     name: str
-    url: AnyUrl
+    url: Union[AnyUrl, str]
 
 
 class CharacterSchema(BaseModel):
@@ -20,8 +20,8 @@ class CharacterSchema(BaseModel):
     species: str
     type: str
     gender: str
-    origin: OriginSchema
-    location: LocationSchema
+    origin: Origin
+    location: Location
     image: str
     episode: List[AnyUrl]
     url: AnyUrl

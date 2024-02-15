@@ -1,6 +1,5 @@
 import requests
 import pytest
-from schemas.pydantic_schemas.info import InfoSchema
 from schemas.pydantic_schemas.location import LocationSchema
 
 

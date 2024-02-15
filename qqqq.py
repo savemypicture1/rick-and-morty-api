@@ -1,10 +1,10 @@
 import requests
 from schemas.pydantic_schemas.character import CharacterSchema
 
-response = requests.get('https://rickandmortyapi.com/api/character/2')
+response = requests.get('https://rickandmortyapi.com/api/character/19')
 response_data = response.json()
-response_data['created'] = "qwerty"
-CharacterSchema(**response_data)
+print(response_data)
+# CharacterSchema(**response_data)
 
 
 # response_data = response.json()
