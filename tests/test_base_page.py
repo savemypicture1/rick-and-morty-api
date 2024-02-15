@@ -1,7 +1,6 @@
 import requests
 import pytest
-from jsonschema import validate
-from schemas.base_page_schema import BASE_PAGE_SCHEMA
+from schemas.pydantic_schemas.base_page import BasePageSchema
 
 
 # ENDPOINT: BASE_PAGE
@@ -14,7 +13,7 @@ def test_base_page():
 
     response = requests.get('https://rickandmortyapi.com/api')
     response_data = response.json()
-    validate(response_data, BASE_PAGE_SCHEMA)
+    BasePageSchema(**response_data)
 
     assert response.status_code == 200, 'Wrong status code'
     assert result == response_data, 'Result does not match'

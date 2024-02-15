@@ -1,157 +1,159 @@
 import requests
 import pytest
-from schemas.pydantic_schemas.character import CharacterSchema
+from schemas.pydantic_schemas.info import InfoSchema
+from schemas.pydantic_schemas.location import LocationSchema
 
 
 # PARAMETRIZE (0, 1, 400, 826, 827) !!!!!!!!!!!!!!!!
 # ENDPOINT: GET A SINGLE CHARACTER
-def test_min_negative_character_id():
-    response = requests.get('https://rickandmortyapi.com/api/character/0')
+@pytest.mark.xfail(reason="200 from the server")
+def test_min_negative_location_id():
+    response = requests.get('https://rickandmortyapi.com/api/location/0')
     response_data = response.json()
 
     assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'Character not found', 'Wrong/No error message'
+    assert response_data['error'] == 'Location not found', 'Wrong/No error message'
 
 
 @pytest.mark.xfail(reason="404 error instead 405 for other methods")
-def test_parametrize_methods_for_min_negative_character_id():
+def test_parametrize_methods_for_min_negative_location_id():
     # Parametrize methods
-    response = requests.post('https://rickandmortyapi.com/api/character/0')
+    response = requests.post('https://rickandmortyapi.com/api/location/0')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
-    response = requests.put('https://rickandmortyapi.com/api/character/0')
+    response = requests.put('https://rickandmortyapi.com/api/location/0')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
-    response = requests.delete('https://rickandmortyapi.com/api/character/0')
+    response = requests.delete('https://rickandmortyapi.com/api/location/0')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
 
-def test_get_a_first_character_id():
-    response = requests.get('https://rickandmortyapi.com/api/character/1')
+def test_get_a_first_location_id():
+    response = requests.get('https://rickandmortyapi.com/api/location/1')
     response_data = response.json()
-    CharacterSchema(**response_data)
+    LocationSchema(**response_data)
 
     assert response.status_code == 200, 'Wrong status code'
-    assert response_data['id'] == 1, 'Wrong character id'
+    assert response_data['id'] == 1, 'Wrong location id'
 
 
 @pytest.mark.xfail(reason="404 error instead 405 for other methods")
-def test_parametrize_methods_for_a_first_character_id():
+def test_parametrize_methods_for_a_first_location_id():
     # Parametrize methods
-    response = requests.post('https://rickandmortyapi.com/api/character/1')
+    response = requests.post('https://rickandmortyapi.com/api/location/1')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
-    response = requests.put('https://rickandmortyapi.com/api/character/1')
+    response = requests.put('https://rickandmortyapi.com/api/location/1')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
-    response = requests.delete('https://rickandmortyapi.com/api/character/1')
+    response = requests.delete('https://rickandmortyapi.com/api/location/1')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
 
-def test_get_a_single_character():
-    response = requests.get('https://rickandmortyapi.com/api/character/400')
+def test_get_a_single_location():
+    response = requests.get('https://rickandmortyapi.com/api/location/80')
     response_data = response.json()
-    CharacterSchema(**response_data)
+    LocationSchema(**response_data)
 
     assert response.status_code == 200, 'Wrong status code'
-    assert response_data['id'] == 400, 'Wrong character id'
+    assert response_data['id'] == 80, 'Wrong location id'
 
 
 @pytest.mark.xfail(reason="404 error instead 405 for other methods")
-def test_parametrize_methods_for_a_single_character():
+def test_parametrize_methods_for_a_single_location():
     # Parametrize methods
-    response = requests.post('https://rickandmortyapi.com/api/character/400')
+    response = requests.post('https://rickandmortyapi.com/api/location/80')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
-    response = requests.put('https://rickandmortyapi.com/api/character/400')
+    response = requests.put('https://rickandmortyapi.com/api/location/80')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
-    response = requests.delete('https://rickandmortyapi.com/api/character/400')
+    response = requests.delete('https://rickandmortyapi.com/api/location/80')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
 
-def test_get_a_last_character_id():
-    response = requests.get('https://rickandmortyapi.com/api/character/826')
+def test_get_a_last_location_id():
+    response = requests.get('https://rickandmortyapi.com/api/location/126')
     response_data = response.json()
-    CharacterSchema(**response_data)
+    LocationSchema(**response_data)
 
     assert response.status_code == 200, 'Wrong status code'
-    assert response_data['id'] == 826, 'Wrong character id'
+    assert response_data['id'] == 126, 'Wrong location id'
 
 
 @pytest.mark.xfail(reason="404 error instead 405 for other methods")
-def test_parametrize_methods_for_a_last_character_id():
+def test_parametrize_methods_for_a_last_location_id():
     # Parametrize methods
-    response = requests.post('https://rickandmortyapi.com/api/character/826')
+    response = requests.post('https://rickandmortyapi.com/api/location/126')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
-    response = requests.put('https://rickandmortyapi.com/api/character/826')
+    response = requests.put('https://rickandmortyapi.com/api/location/126')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
-    response = requests.delete('https://rickandmortyapi.com/api/character/826')
+    response = requests.delete('https://rickandmortyapi.com/api/location/126')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
 
-def test_max_negative_character_id():
-    response = requests.get('https://rickandmortyapi.com/api/character/827')
+def test_max_negative_location_id():
+    response = requests.get('https://rickandmortyapi.com/api/location/127')
     response_data = response.json()
 
     assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'Character not found', 'Wrong/No error message'
+    assert response_data['error'] == 'Location not found', 'Wrong/No error message'
 
 
 @pytest.mark.xfail(reason="404 error instead 405 for other methods")
-def test_parametrize_methods_with_negative_character_id():
+def test_parametrize_methods_with_negative_location_id():
     # Parametrize methods
-    response = requests.post('https://rickandmortyapi.com/api/character/827')
+    response = requests.post('https://rickandmortyapi.com/api/location/127')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
-    response = requests.put('https://rickandmortyapi.com/api/character/827')
+    response = requests.put('https://rickandmortyapi.com/api/location/127')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
-    response = requests.delete('https://rickandmortyapi.com/api/character/827')
+    response = requests.delete('https://rickandmortyapi.com/api/location/127')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
@@ -159,39 +161,39 @@ def test_parametrize_methods_with_negative_character_id():
 
 
 @pytest.mark.skip('Create For fun')
-def test_id_for_all_characters():
-    for character_id in range(1, 827):
-        url = f'https://rickandmortyapi.com/api/character/{character_id}'
+def test_id_for_all_locations():
+    for location_id in range(1, 127):
+        url = f'https://rickandmortyapi.com/api/location/{location_id}'
         response = requests.get(url)
         response_data = response.json()
-        CharacterSchema(**response_data)
+        LocationSchema(**response_data)
 
         assert response.status_code == 200, 'Wrong status code'
-        assert response_data['id'] == character_id, 'Wrong character id'
+        assert response_data['id'] == location_id, 'Wrong location id'
 
 
 @pytest.mark.xfail(reason="Wrong status code")
-def test_parametrize_methods_with_incorrect_character_id():
+def test_parametrize_methods_with_incorrect_location_id():
     # Parametrize methods
-    response = requests.get('https://rickandmortyapi.com/api/character/qwerty')
+    response = requests.get('https://rickandmortyapi.com/api/location/qwerty')
     response_data = response.json()
 
     assert response.status_code == 404, 'Wrong status code'
     assert response_data['error'] == 'Hey! you must provide an id', 'Wrong/No error message'
 
-    response = requests.post('https://rickandmortyapi.com/api/character/qwerty')
+    response = requests.post('https://rickandmortyapi.com/api/location/qwerty')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
-    response = requests.put('https://rickandmortyapi.com/api/character/qwerty')
+    response = requests.put('https://rickandmortyapi.com/api/location/qwerty')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
 
-    response = requests.delete('https://rickandmortyapi.com/api/character/qwerty')
+    response = requests.delete('https://rickandmortyapi.com/api/location/qwerty')
     response_data = response.json()
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'

@@ -1,7 +1,6 @@
 import requests
 import pytest
-from jsonschema import validate
-from schemas.character_schema import CHARACTER_SCHEMA
+from schemas.pydantic_schemas.character import CharacterSchema
 
 
 # ENDPOINT: MULTIPLE CHARACTERS
@@ -10,7 +9,7 @@ def test_multiple_characters_id():
     response_data = response.json()
     character_ids = []
     for character in response_data:
-        validate(character, CHARACTER_SCHEMA)
+        CharacterSchema(**character)
         character_ids.append(character['id'])
 
     assert response.status_code == 200, 'Wrong status code'
@@ -44,7 +43,7 @@ def test_parametrize_methods_with_multiple_characters_id():
 def test_ignore_zero_in_id():
     response = requests.get('https://rickandmortyapi.com/api/character/0745')
     response_data = response.json()
-    validate(response_data, CHARACTER_SCHEMA)
+    CharacterSchema(**response_data)
 
     assert response.status_code == 200, 'Wrong status code'
     assert response_data['id'] == 745, 'Wrong character id'
@@ -86,7 +85,7 @@ def test_ignore_negative_multiple_character():
     response_data = response.json()
     character_ids = []
     for character in response_data:
-        validate(character, CHARACTER_SCHEMA)
+        CharacterSchema(**character)
         character_ids.append(character['id'])
 
     assert response.status_code == 200, 'Wrong status code'
