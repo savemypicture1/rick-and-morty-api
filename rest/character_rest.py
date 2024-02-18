@@ -37,9 +37,11 @@ class Characters(RestClient):
         response = requests.get(f'{self.URL}/{ids}')
         response_data = response.json()
         if response.status_code == 200:
+            requested_ids = []
             ArrayCharacter(**{'items': response_data})
-            for i, id in enumerate(ids):
-                assert id == response_data[i]['id']
+            for char in response_data:
+                requested_ids.append(char['id'])
+            assert requested_ids == ids
 
         return response, response_data
 
@@ -55,11 +57,15 @@ class Characters(RestClient):
     def filter_by_status(self, status):
         response = requests.get(f'{self.URL}?status={status}')
         response_data = response.json()
+
         if response.status_code == 200:
+            statuses = []
             InfoSchema(**response_data['info'])
             ArrayCharacter(**{'items': response_data['results']})
-            for i, status in enumerate(response_data["results"]):
-                assert status == response_data['results'][i]['status']
+            for char in response_data['results']:
+                statuses.append(char['status'])
+            for requested_status in statuses:
+                assert requested_status == status
 
         return response, response_data
 

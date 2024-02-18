@@ -1,41 +1,21 @@
-import requests
-import pytest
-from schemas.pydantic_schemas.base_page import BasePageSchema
+from rest.base_page_rest import BasePage
 
 
-# ENDPOINT: BASE_PAGE
+# SEND REQUEST TO /BASE ENDPOINT
 def test_base_page():
-    result = {
-        'characters': 'https://rickandmortyapi.com/api/character',
-        'locations': 'https://rickandmortyapi.com/api/location',
-        'episodes': 'https://rickandmortyapi.com/api/episode'
-    }
-
-    response = requests.get('https://rickandmortyapi.com/api')
-    response_data = response.json()
-    BasePageSchema(**response_data)
+    base_page = BasePage()
+    response, response_data = base_page.send_request()
 
     assert response.status_code == 200, 'Wrong status code'
-    assert result == response_data, 'Result does not match'
+    assert response_data['characters'] == 'https://rickandmortyapi.com/api/character', 'Wrong url'
+    assert response_data['locations'] == 'https://rickandmortyapi.com/api/location', 'Wrong url'
+    assert response_data['episodes'] == 'https://rickandmortyapi.com/api/episode', 'Wrong url'
 
 
-@pytest.mark.xfail(reason="404 error instead 405 for other methods")
-def test_parametrize_methods_for_base_page():
-    # Parametrize methods
-    response = requests.post('https://rickandmortyapi.com/api')
-    response_data = response.json()
-
-    assert response.status_code == 405, 'Wrong status code, must be 405 error'
-    assert response_data['error'] == 'There is nothing here.'
-
-    response = requests.put('https://rickandmortyapi.com/api')
-    response_data = response.json()
-
-    assert response.status_code == 405, 'Wrong status code, must be 405 error'
-    assert response_data['error'] == 'There is nothing here.'
-
-    response = requests.delete('https://rickandmortyapi.com/api')
-    response_data = response.json()
+# SEND REQUEST TO /BASE ENDPOINT BY POST METHOD
+def test_other_methods_base_page():
+    base_page = BasePage()
+    response, response_data = base_page.other_methods('post')
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
