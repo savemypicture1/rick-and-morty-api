@@ -26,3 +26,7 @@ class CharacterSchema(BaseModel):
     episode: List[AnyUrl]
     url: AnyUrl
     created: datetime
+
+
+class ArrayCharacter(BaseModel):
+    items: List[CharacterSchema]
