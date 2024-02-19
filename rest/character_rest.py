@@ -54,8 +54,38 @@ class Characters(RestClient):
 
         return response, response_data
 
+    def filter_by_name_page(self, page, name):
+        response = requests.get(f'{self.URL}?page={page}&name={name}')
+        response_data = response.json()
+
+        if response.status_code == 200:
+            statuses = []
+            InfoSchema(**response_data['info'])
+            ArrayCharacter(**{'items': response_data['results']})
+            for char in response_data['results']:
+                statuses.append(char['status'])
+            for requested_status in statuses:
+                assert requested_status == status
+
+        return response, response_data
+
     def filter_by_status(self, status):
         response = requests.get(f'{self.URL}?status={status}')
+        response_data = response.json()
+
+        if response.status_code == 200:
+            statuses = []
+            InfoSchema(**response_data['info'])
+            ArrayCharacter(**{'items': response_data['results']})
+            for char in response_data['results']:
+                statuses.append(char['status'])
+            for requested_status in statuses:
+                assert requested_status == status
+
+        return response, response_data
+
+    def filter_by_status_page(self, page, status):
+        response = requests.get(f'{self.URL}?page={page}&status={status}')
         response_data = response.json()
 
         if response.status_code == 200:

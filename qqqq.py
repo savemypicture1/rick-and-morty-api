@@ -7,22 +7,27 @@ from rest.character_rest import Characters
 from schemas.pydantic_schemas.character import CharacterSchema, ArrayCharacter
 from schemas.pydantic_schemas.info import InfoSchema
 
+response = requests.get('https://rickandmortyapi.com/api/character?page=220&status=alive')
+response_data = response.json()
+print(response.status_code)
+pprint(response_data)
+# pprint(type(page))
+
 # response = requests.get('https://rickandmortyapi.com/api/character?status=alive')
 # response_data = response.json()
 # status = []
 # for char in response_data['results']:
 #     status.append(char['status'])
 # print(status)
-# print(response_data['results'])
 
-input_ids = '20', '22', '826'
-response = requests.get(f'https://rickandmortyapi.com/api/character/{input_ids}')
-response_data = response.json()
-ids = []
-for char in response_data:
-    ids.append(char['id'])
-print(ids)
-print(type(input_ids))
+# input_ids = '20', '22', '826'
+# response = requests.get(f'https://rickandmortyapi.com/api/character/{input_ids}')
+# response_data = response.json()
+# ids = []
+# for char in response_data:
+#     ids.append(char['id'])
+# print(ids)
+# print(type(input_ids))
 
 # response = requests.get(f'{self.URL}/{",".join(map(str, ids))}')
 
