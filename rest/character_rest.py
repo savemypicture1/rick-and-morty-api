@@ -63,9 +63,9 @@ class Characters(RestClient):
             InfoSchema(**response_data['info'])
             ArrayCharacter(**{'items': response_data['results']})
             for char in response_data['results']:
-                statuses.append(char['status'])
+                statuses.append(char['name'])
             for requested_status in statuses:
-                assert requested_status == status
+                assert requested_status == name
 
         return response, response_data
 

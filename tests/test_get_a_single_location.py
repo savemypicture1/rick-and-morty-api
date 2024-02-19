@@ -3,8 +3,8 @@ import pytest
 from schemas.pydantic_schemas.location import LocationSchema
 
 
-# PARAMETRIZE (0, 1, 400, 826, 827) !!!!!!!!!!!!!!!!
-# ENDPOINT: GET A SINGLE CHARACTER
+# PARAMETRIZE (0, 1, 80, 126, 127) !!!!!!!!!!!!!!!!
+# ENDPOINT: GET A SINGLE LOCATION
 @pytest.mark.xfail(reason="200 from the server")
 def test_min_negative_location_id():
     response = requests.get('https://rickandmortyapi.com/api/location/0')
