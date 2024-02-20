@@ -1,5 +1,6 @@
 import requests
 
+
 from rest.rest_client import RestClient
 from schemas.pydantic_schemas.character import CharacterSchema, ArrayCharacter
 from schemas.pydantic_schemas.info import InfoSchema

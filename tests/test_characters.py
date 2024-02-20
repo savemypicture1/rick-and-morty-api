@@ -1,4 +1,3 @@
-import requests
 import pytest
 
 from rest.character_rest import Characters
