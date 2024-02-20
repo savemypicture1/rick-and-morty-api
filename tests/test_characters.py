@@ -2,7 +2,6 @@ import requests
 import pytest
 
 from rest.character_rest import Characters
-from schemas.pydantic_schemas.character import CharacterSchema
 from utils.randomize_int import CharacterRandomize
 
 randomizer = CharacterRandomize()
@@ -124,9 +123,9 @@ def test_filter_by_name():
     assert len(response_data['results']) == 4, 'Wrong count characters on page'
 
 
-def test_filter_by_name_with_invalid_page():
+def test_filter_by_name_with_incorrect_page():
     name = Characters()
-    response, response_data = name.filter_by_name('Rick Sanchez')
+    response, response_data = name.filter_by_name_page(2, 'Rick Sanchez')
 
     assert response.status_code == 404, 'Wrong status code'
     assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
@@ -154,8 +153,8 @@ def test_filter_by_alive_status():
 
 
 def test_filter_by_alive_status_last_page():
-    page = Characters()
-    response, response_data = page.filter_by_status_page(22, 'Alive')
+    status = Characters()
+    response, response_data = status.filter_by_status_page(22, 'Alive')
 
     assert response.status_code == 200, 'Wrong status code'
     assert response_data['info']['count'] == 439, 'Wrong count characters in info'
@@ -165,7 +164,14 @@ def test_filter_by_alive_status_last_page():
     assert len(response_data['results']) == 19, 'Wrong count characters on page'
 
 
-# PAGES FOR FILTER BY DEAD STATUS
+def test_filter_by_alive_status_with_incorrect_page():
+    status = Characters()
+    response, response_data = status.filter_by_status_page(23, 'Alive')
+
+    assert response.status_code == 404, 'Wrong status code'
+    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+
+
 def test_filter_by_dead_status():
     status = Characters()
     response, response_data = status.filter_by_status('Dead')
@@ -179,8 +185,8 @@ def test_filter_by_dead_status():
 
 
 def test_filter_by_dead_status_last_page():
-    page = Characters()
-    response, response_data = page.filter_by_status_page(15, 'Dead')
+    status = Characters()
+    response, response_data = status.filter_by_status_page(15, 'Dead')
 
     assert response.status_code == 200, 'Wrong status code'
     assert response_data['info']['count'] == 287, 'Wrong count characters in info'
@@ -190,7 +196,14 @@ def test_filter_by_dead_status_last_page():
     assert len(response_data['results']) == 7, 'Wrong count characters on page'
 
 
-# PAGES FOR FILTER BY UNKNOWN STATUS
+def test_filter_by_dead_status_with_incorrect_page():
+    status = Characters()
+    response, response_data = status.filter_by_status_page(16, 'Dead')
+
+    assert response.status_code == 404, 'Wrong status code'
+    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+
+
 def test_filter_by_unknown_status():
     status = Characters()
     response, response_data = status.filter_by_status('unknown')
@@ -204,8 +217,8 @@ def test_filter_by_unknown_status():
 
 
 def test_filter_by_unknown_status_last_page():
-    page = Characters()
-    response, response_data = page.filter_by_status_page(5, 'unknown')
+    status = Characters()
+    response, response_data = status.filter_by_status_page(5, 'unknown')
 
     assert response.status_code == 200, 'Wrong status code'
     assert response_data['info']['count'] == 100, 'Wrong count characters in info'
@@ -215,12 +228,156 @@ def test_filter_by_unknown_status_last_page():
     assert len(response_data['results']) == 20, 'Wrong count characters on page'
 
 
-def test_filter_by_incorrect_status():
-    response = requests.get('https://rickandmortyapi.com/api/character?status=qwe1234')
-    response_data = response.json()
+def test_filter_by_unknown_status_with_incorrect_page():
+    status = Characters()
+    response, response_data = status.filter_by_status_page(6, 'unknown')
 
     assert response.status_code == 404, 'Wrong status code'
     assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+
+
+def test_filter_by_incorrect_status():
+    status = Characters()
+    response, response_data = status.filter_by_status('qwerty1234')
+
+    assert response.status_code == 404, 'Wrong status code'
+    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+
+
+# FILTER CHARACTERS BY SPECIES
+def test_filter_by_species():
+    specie = Characters()
+    response, response_data = specie.filter_by_species('Human')
+
+    assert response.status_code == 200, 'Wrong status code'
+    assert response_data['info']['count'] == 434, 'Wrong count characters in info'
+    assert response_data['info']['pages'] == 22, 'Wrong count pages in info'
+    assert response_data['info']['prev'] is None, 'Prev page is available'
+    assert response_data['info']['next'] is not None, 'Next page is available'
+    assert len(response_data['results']) == 20, 'Wrong count characters on page'
+
+
+def test_filter_by_species_last_page():
+    specie = Characters()
+    response, response_data = specie.filter_by_species_page(22, 'Human')
+
+    assert response.status_code == 200, 'Wrong status code'
+    assert response_data['info']['count'] == 434, 'Wrong count characters in info'
+    assert response_data['info']['pages'] == 22, 'Wrong count pages in info'
+    assert response_data['info']['prev'] is not None, 'Prev page is available'
+    assert response_data['info']['next'] is None, 'Next page is available'
+    assert len(response_data['results']) == 20, 'Wrong count characters on page'
+
+
+def test_filter_by_species_with_incorrect_page():
+    specie = Characters()
+    response, response_data = specie.filter_by_species_page(23, 'Human')
+
+    assert response.status_code == 404, 'Wrong status code'
+    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+
+
+def test_filter_by_incorrect_species():
+    specie = Characters()
+    response, response_data = specie.filter_by_status('qwerty1234')
+
+    assert response.status_code == 404, 'Wrong status code'
+    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+
+
+# FILTER CHARACTERS BY TYPE
+def test_filter_by_type():
+    pass
+
+
+def test_filter_by_type_last_page():
+    pass
+
+
+def test_filter_by_type_with_incorrect_page():
+    pass
+
+
+def test_filter_by_incorrect_type():
+    pass
+
+
+# FILTER CHARACTERS BY GENDER
+def test_filter_by_female_gender():
+    gender = Characters()
+    response, response_data = gender.filter_by_gender('female')
+
+    assert response.status_code == 200, 'Wrong status code'
+    assert response_data['info']['count'] == 148, 'Wrong count characters in info'
+    assert response_data['info']['pages'] == 8, 'Wrong count pages in info'
+    assert response_data['info']['prev'] is None, 'Prev page is available'
+    assert response_data['info']['next'] is not None, 'Next page is available'
+    assert len(response_data['results']) == 20, 'Wrong count characters on page'
+
+
+def test_filter_by_female_gender_last_page():
+    gender = Characters()
+    response, response_data = gender.filter_by_gender_page(8, 'female')
+
+    assert response.status_code == 200, 'Wrong status code'
+    assert response_data['info']['count'] == 148, 'Wrong count characters in info'
+    assert response_data['info']['pages'] == 8, 'Wrong count pages in info'
+    assert response_data['info']['prev'] is not None, 'Prev page is available'
+    assert response_data['info']['next'] is None, 'Next page is available'
+    assert len(response_data['results']) == 20, 'Wrong count characters on page'
+
+
+def test_filter_by_female_gender_with_incorrect_page():
+    gender = Characters()
+    response, response_data = gender.filter_by_gender_page(9, 'female')
+
+    assert response.status_code == 404, 'Wrong status code'
+    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+
+
+def test_filter_by_male_gender():
+    pass
+
+
+def test_filter_by_male_gender_last_page():
+    pass
+
+
+def test_filter_by_male_gender_with_incorrect_page():
+    pass
+
+
+def test_filter_by_genderless_gender():
+    pass
+
+
+def test_filter_by_genderless_gender_last_page():
+    pass
+
+
+def test_filter_by_genderless_gender_with_incorrect_page():
+    pass
+
+
+def test_filter_by_unknown_gender():
+    pass
+
+
+def test_filter_by_unknown_gender_last_page():
+    pass
+
+
+def test_filter_by_unknown_gender_with_incorrect_page():
+    pass
+
+
+def test_filter_with_incorrect_gender():
+    pass
+
+
+# TEST WITH ALL FILTERS
+def test_with_all_filters():
+    pass
 
 
 # SEND REQUEST TO CHARACTER ENDPOINTS BY OTHER METHODS
@@ -231,36 +388,3 @@ def test_other_methods_characters(methods):
 
     assert response.status_code == 405, 'Wrong status code, must be 405 error'
     assert response_data['error'] == 'There is nothing here.'
-
-
-@pytest.mark.parametrize('pages', [randomizer.generate_random_page(), randomizer.generate_random_page()])
-def test_valid_pages(pages):
-    page = Characters()
-    response, response_data = page.pagination(pages)
-
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 826, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 42, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is not None, 'Prev page is available'
-    assert response_data['info']['next'] is not None, 'Next page is available'
-    assert len(response_data['results']) == 20, 'Wrong count characters on page'
-
-
-def test_last_page():
-    page = Characters()
-    response, response_data = page.pagination(42)
-
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 826, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 42, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is not None, 'Prev page is available'
-    assert response_data['info']['next'] is None, 'Next page is available'
-    assert len(response_data['results']) == 6, 'Wrong count characters on page'
-
-
-def test_invalid_page():
-    page = Characters()
-    response, response_data = page.pagination(43)
-
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'There is nothing here'

@@ -59,13 +59,13 @@ class Characters(RestClient):
         response_data = response.json()
 
         if response.status_code == 200:
-            statuses = []
+            names = []
             InfoSchema(**response_data['info'])
             ArrayCharacter(**{'items': response_data['results']})
             for char in response_data['results']:
-                statuses.append(char['name'])
-            for requested_status in statuses:
-                assert requested_status == name
+                names.append(char['name'])
+            for requested_name in names:
+                assert requested_name == name
 
         return response, response_data
 
@@ -96,6 +96,72 @@ class Characters(RestClient):
                 statuses.append(char['status'])
             for requested_status in statuses:
                 assert requested_status == status
+
+        return response, response_data
+
+    def filter_by_species(self, specie):
+        response = requests.get(f'{self.URL}?species={specie}')
+        response_data = response.json()
+
+        if response.status_code == 200:
+            species = []
+            InfoSchema(**response_data['info'])
+            ArrayCharacter(**{'items': response_data['results']})
+            for char in response_data['results']:
+                species.append(char['species'])
+            for requested_specie in species:
+                assert requested_specie == specie
+
+        return response, response_data
+
+    def filter_by_species_page(self, page, specie):
+        response = requests.get(f'{self.URL}?page={page}&species={specie}')
+        response_data = response.json()
+
+        if response.status_code == 200:
+            species = []
+            InfoSchema(**response_data['info'])
+            ArrayCharacter(**{'items': response_data['results']})
+            for char in response_data['results']:
+                species.append(char['species'])
+            for requested_specie in species:
+                assert requested_specie == specie
+
+        return response, response_data
+
+    def filter_by_type(self):
+        pass
+
+    def filter_by_type_page(self):
+        pass
+
+    def filter_by_gender(self, gender):
+        response = requests.get(f'{self.URL}?gender={gender}')
+        response_data = response.json()
+
+        if response.status_code == 200:
+            genders = []
+            InfoSchema(**response_data['info'])
+            ArrayCharacter(**{'items': response_data['results']})
+            for char in response_data['results']:
+                genders.append(char['gender'])
+            for requested_gender in genders:
+                assert requested_gender == gender
+
+        return response, response_data
+
+    def filter_by_gender_page(self, page, gender):
+        response = requests.get(f'{self.URL}?page={page}&species={gender}')
+        response_data = response.json()
+
+        if response.status_code == 200:
+            genders = []
+            InfoSchema(**response_data['info'])
+            ArrayCharacter(**{'items': response_data['results']})
+            for char in response_data['results']:
+                genders.append(char['gender'])
+            for requested_gender in genders:
+                assert requested_gender == gender
 
         return response, response_data
 
