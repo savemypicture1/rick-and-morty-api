@@ -129,11 +129,23 @@ class Characters(RestClient):
 
         return response, response_data
 
-    def filter_by_type(self):
-        pass
+    def filter_by_type(self, type):
+        response = requests.get(f'{self.URL}?type={type}')
+        response_data = response.json()
+        if response.status_code == 200:
+            InfoSchema(**response_data['info'])
+            ArrayCharacter(**{'items': response_data['results']})
 
-    def filter_by_type_page(self):
-        pass
+        return response, response_data
+
+    def filter_by_type_page(self, page, type):
+        response = requests.get(f'{self.URL}?page={page}&species={type}')
+        response_data = response.json()
+        if response.status_code == 200:
+            InfoSchema(**response_data['info'])
+            ArrayCharacter(**{'items': response_data['results']})
+
+        return response, response_data
 
     def filter_by_gender(self, gender):
         response = requests.get(f'{self.URL}?gender={gender}')
@@ -151,7 +163,7 @@ class Characters(RestClient):
         return response, response_data
 
     def filter_by_gender_page(self, page, gender):
-        response = requests.get(f'{self.URL}?page={page}&species={gender}')
+        response = requests.get(f'{self.URL}?page={page}&gender={gender}')
         response_data = response.json()
 
         if response.status_code == 200:

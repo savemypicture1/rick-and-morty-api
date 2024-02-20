@@ -7,7 +7,7 @@ from rest.character_rest import Characters
 from schemas.pydantic_schemas.character import CharacterSchema, ArrayCharacter
 from schemas.pydantic_schemas.info import InfoSchema
 
-response = requests.get('https://rickandmortyapi.com/api/character?page=220&status=alive')
+response = requests.get('https://rickandmortyapi.com/api/character?type=Cromulon')
 response_data = response.json()
 print(response.status_code)
 pprint(response_data)
