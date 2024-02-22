@@ -1,12 +1,10 @@
 import requests
 
-
-from rest.rest_client import RestClient
 from schemas.pydantic_schemas.character import CharacterSchema, ArrayCharacter
 from schemas.pydantic_schemas.info import InfoSchema
 
 
-class Characters(RestClient):
+class Characters():
     URL = 'https://rickandmortyapi.com/api/character'
 
     def get_all_characters(self):

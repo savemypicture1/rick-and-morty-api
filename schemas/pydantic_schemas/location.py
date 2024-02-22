@@ -11,3 +11,7 @@ class LocationSchema(BaseModel):
     residents: List[str]
     url: AnyUrl
     created: datetime
+
+
+class ArrayLocation(BaseModel):
+    items: List[LocationSchema]
