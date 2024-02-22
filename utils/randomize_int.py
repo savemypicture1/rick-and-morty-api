@@ -16,5 +16,8 @@ class CharacterRandomize:
 
 
 class LocationRandomize:
+    def generate_random_id(self):
+        return random.randint(1, 126)
+
     def generate_random_page(self):
         return random.randint(2, 7)
