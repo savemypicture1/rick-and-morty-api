@@ -113,6 +113,8 @@ def test_invalid_multiple_characters():
 def test_filter_by_name():
     name = Characters()
     response, response_data = name.filter_by_name('Rick Sanchez')
+    for char in response_data['results']:
+        assert char['name'] == 'Rick Sanchez', 'Wrong character name'
 
     assert response.status_code == 200, 'Wrong status code'
     assert response_data['info']['count'] == 4, 'Wrong count characters'
