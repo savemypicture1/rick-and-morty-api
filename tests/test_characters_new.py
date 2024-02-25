@@ -1,6 +1,6 @@
 import pytest
 
-from rest.character_rest import Characters
+from rest.character_rest_new import Characters
 from utils.randomize_int import CharacterRandomize
 
 randomizer = CharacterRandomize()
@@ -8,73 +8,82 @@ randomizer = CharacterRandomize()
 
 # SEND REQUEST TO /CHARACTER ENDPOINT
 def test_get_all_characters():
-    char = Characters()
-    response, response_data = char.get_all_characters()
+    character = Characters()
+    character.send_request()
+    character.validate_response_data_info()
+    character.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 826, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 42, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is None, 'Prev page is available'
-    assert response_data['info']['next'] is not None, 'Next page is available'
-    assert len(response_data['results']) == 20, 'Wrong count characters on page'
+    character.check_status_code(200)
+    character.check_response_data_info_count(826)
+    character.check_response_data_info_pages(42)
+    character.check_prev_page_is_none()
+    character.check_next_page_is_not_none()
+    character.check_count_of_items_in_results(20)
 
 
 # MANIPULATION WITH A CHARACTERS PAGES
 @pytest.mark.parametrize('pages', [0, 1])
 def test_first_pages(pages):
-    page = Characters()
-    response, response_data = page.pagination(pages)
+    character = Characters()
+    character.send_request_with_page(pages)
+    character.validate_response_data_info()
+    character.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 826, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 42, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is None, 'Prev page is available'
-    assert response_data['info']['next'] is not None, 'Next page is available'
-    assert len(response_data['results']) == 20, 'Wrong count characters on page'
+    character.check_status_code(200)
+    character.check_response_data_info_count(826)
+    character.check_response_data_info_pages(42)
+    character.check_prev_page_is_none()
+    character.check_next_page_is_not_none()
+    character.check_count_of_items_in_results(20)
 
 
 @pytest.mark.parametrize('pages', [randomizer.generate_random_page(),
                                    randomizer.generate_random_page()])
 def test_valid_pages(pages):
-    page = Characters()
-    response, response_data = page.pagination(pages)
+    character = Characters()
+    character.send_request_with_page(pages)
+    character.validate_response_data_info()
+    character.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 826, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 42, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is not None, 'Prev page is available'
-    assert response_data['info']['next'] is not None, 'Next page is available'
-    assert len(response_data['results']) == 20, 'Wrong count characters on page'
+    character.check_status_code(200)
+    character.check_response_data_info_count(826)
+    character.check_response_data_info_pages(42)
+    character.check_prev_page_is_not_none()
+    character.check_next_page_is_not_none()
+    character.check_count_of_items_in_results(20)
 
 
 def test_last_page():
-    page = Characters()
-    response, response_data = page.pagination(42)
+    character = Characters()
+    character.send_request_with_page(42)
+    character.validate_response_data_info()
+    character.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 826, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 42, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is not None, 'Prev page is available'
-    assert response_data['info']['next'] is None, 'Next page is available'
-    assert len(response_data['results']) == 6, 'Wrong count characters on page'
+    character.check_status_code(200)
+    character.check_response_data_info_count(826)
+    character.check_response_data_info_pages(42)
+    character.check_prev_page_is_not_none()
+    character.check_next_page_is_none()
+    character.check_count_of_items_in_results(6)
 
 
 def test_not_exist_page():
-    page = Characters()
-    response, response_data = page.pagination(43)
+    character = Characters()
+    character.send_request_with_page(43)
 
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'There is nothing here'
+    character.check_status_code(404)
+    character.check_error_message()
 
 
 # SEARCH CHARACTER BY ID
 def test_get_character_by_valid_id():
-    char = Characters()
+    character = Characters()
     id = randomizer.generate_random_id()
-    response, response_data = char.get_character_by_id(id)
+    character.get_character_by_id(id)
+    character.validate_character()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['id'] == id, 'Wrong character id'
+    character.check_status_code(200)
+    character.check_character_id(id)
 
 
 @pytest.mark.parametrize('id', [0, 827, 'qwerty'])
