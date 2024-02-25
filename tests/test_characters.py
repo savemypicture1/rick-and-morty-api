@@ -19,6 +19,28 @@ def test_get_all_characters():
     assert len(response_data['results']) == 20, 'Wrong count characters on page'
 
 
+def test_get_all_characters_new():
+    character = Characters()
+    character.send_request()
+    character.validate_response_data_info()
+    character.validate_response_data_results()
+
+    character.check_status_code(200)
+    character.check_response_data_info_count(826)
+    character.check_response_data_info_pages(42)
+    character.check_prev_page_is_none()
+    character.check_next_page_is_not_none()
+    character.check_count_of_items_in_results(20)
+    # response, response_data = char.get_all_characters()
+
+    # assert response.status_code == 200, 'Wrong status code'
+    # assert response_data['info']['count'] == 826, 'Wrong count characters in info'
+    # assert response_data['info']['pages'] == 42, 'Wrong count pages in info'
+    # assert response_data['info']['prev'] is None, 'Prev page is available'
+    # assert response_data['info']['next'] is not None, 'Next page is available'
+    # assert len(response_data['results']) == 20, 'Wrong count characters on page'
+
+
 # MANIPULATION WITH A CHARACTERS PAGES
 @pytest.mark.parametrize('pages', [0, 1])
 def test_first_pages(pages):

@@ -1,5 +1,4 @@
-
-BASE_PAGE_SCHEMA = {
+BASE_URL_SCHEMA = {
     'type': 'object',
     'properties': {
         'characters': {'type': 'string'},

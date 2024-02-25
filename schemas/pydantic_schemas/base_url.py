@@ -1,7 +1,7 @@
 from pydantic import BaseModel, AnyUrl
 
 
-class BasePageSchema(BaseModel):
+class BaseUrlSchema(BaseModel):
     characters: AnyUrl
     locations: AnyUrl
     episodes: AnyUrl

@@ -7,6 +7,9 @@ from schemas.pydantic_schemas.info import InfoSchema
 class Characters():
     URL = 'https://rickandmortyapi.com/api/character'
 
+    response = None
+    response_data = None
+
     def get_all_characters(self):
         response = requests.get(self.URL)
         response_data = response.json()
@@ -14,6 +17,40 @@ class Characters():
         ArrayCharacter(**{'items': response_data['results']})
 
         return response, response_data
+
+    def send_request(self):
+        self.response = requests.get(self.URL)
+        self.response_data = self.response.json()
+
+    def validate_response_data_info(self):
+        InfoSchema(**self.response_data['info'])
+
+    def validate_response_data_results(self):
+        ArrayCharacter(**{'items': self.response_data['results']})
+
+    def check_status_code(self, status_code):
+        assert self.response.status_code == status_code, 'Wrong status code'
+
+    def check_response_data_info_count(self, count):
+        assert self.response_data['info']['count'] == count, 'Wrong count characters in info'
+
+    def check_response_data_info_pages(self, pages):
+        assert self.response_data['info']['pages'] == pages, 'Wrong count pages in info'
+
+    def check_prev_page_is_none(self):
+        assert self.response_data['info']['prev'] is None, 'Prev page is available'
+
+    def check_prev_page_is_not_none(self):
+        assert self.response_data['info']['prev'] is not None, 'Next page is available'
+
+    def check_next_page_is_none(self):
+        assert self.response_data['info']['next'] is None, 'Next page is available'
+
+    def check_next_page_is_not_none(self):
+        assert self.response_data['info']['next'] is not None, 'Next page is available'
+
+    def check_count_of_items_in_results(self, count):
+        assert len(self.response_data['results']) == count, 'Wrong count characters on page'
 
     def pagination(self, page_number):
         response = requests.get(f'{self.URL}?page={page_number}')

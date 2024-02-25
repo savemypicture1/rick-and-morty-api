@@ -1,15 +1,15 @@
 import requests
 
-from schemas.pydantic_schemas.base_page import BasePageSchema
+from schemas.pydantic_schemas.base_url import BaseUrlSchema
 
 
-class BasePage():
+class Base():
     URL = 'https://rickandmortyapi.com/api'
 
     def send_request(self):
         response = requests.get('https://rickandmortyapi.com/api')
         response_data = response.json()
-        BasePageSchema(**response_data)
+        BaseUrlSchema(**response_data)
 
         return response, response_data
 
