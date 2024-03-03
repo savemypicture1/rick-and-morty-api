@@ -72,7 +72,7 @@ def test_not_exist_page():
     character.send_request_with_page(43)
 
     character.check_status_code(404)
-    character.check_error_message()
+    character.check_error_message('There is nothing here')
 
 
 # SEARCH CHARACTER BY ID
@@ -88,40 +88,57 @@ def test_get_character_by_valid_id():
 
 @pytest.mark.parametrize('id', [0, 827, 'qwerty'])
 def test_get_character_by_invalid_id(id):
-    char = Characters()
-    response, response_data = char.get_character_by_id(id)
+    character = Characters()
+    character.get_character_by_id(id)
 
     if type(id) == int:
-        assert response.status_code == 404, 'Wrong status code'
-        assert response_data['error'] == 'Character not found', 'Wrong/No error message'
+        character.check_status_code(404)
+        character.check_error_message('Character not found')
     else:
-        assert response.status_code == 400, 'Wrong status code'
-        assert response_data['error'] == 'Hey! you must provide an id', 'Wrong/No error message'
+        character.check_status_code(400)
+        character.check_error_message('Hey! you must provide an id')
 
 
 # SEARCH CHARACTERS BY MULTIPLE REQUEST
 def test_get_valid_multiple_characters():
-    char = Characters()
+    character = Characters()
     ids = randomizer.generate_random_multiple_ids()
-    response, response_data = char.get_multiple_characters(ids)
+    character.get_multiple_characters(ids)
+    character.validate_multiple_characters()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert len(response_data) == len(ids), 'Wrong count characters'
+    character.check_status_code(200)
+    character.check_response_multiple_ids(ids)
 
 
 @pytest.mark.xfail(reason="200 from the server")
-def test_invalid_multiple_characters():
-    char = Characters()
-    response, response_data = char.get_multiple_characters('0, 827')
+def test_get_invalid_multiple_characters():
+    character = Characters()
+    character.get_multiple_characters('0, 827')
 
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'Character not found', 'Wrong/No error message'
+    character.check_status_code(404)
+    character.check_error_message('Character not found')
 
 
 # FILTER CHARACTERS BY NAME
 def test_filter_by_name():
     name = Characters()
     response, response_data = name.filter_by_name('Rick Sanchez')
+    for char in response_data['results']:
+        assert char['name'] == 'Rick Sanchez', 'Wrong character name'
+
+    assert response.status_code == 200, 'Wrong status code'
+    assert response_data['info']['count'] == 4, 'Wrong count characters'
+    assert response_data['info']['pages'] == 1, 'Wrong count pages'
+    assert response_data['info']['next'] is None, 'Next page is available'
+    assert response_data['info']['prev'] is None, 'Next page is available'
+    assert len(response_data['results']) == 4, 'Wrong count characters on page'
+
+
+def test_filter_by_name():
+    name = Characters()
+    name.filter_by_name('Rick Sanchez')
+    name.validate_response_data_info()
+    name.validate_response_data_results()
     for char in response_data['results']:
         assert char['name'] == 'Rick Sanchez', 'Wrong character name'
 

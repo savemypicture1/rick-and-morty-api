@@ -101,7 +101,7 @@ def test_get_valid_multiple_characters():
 
 
 @pytest.mark.xfail(reason="200 from the server")
-def test_invalid_multiple_characters():
+def test_get_invalid_multiple_characters():
     char = Characters()
     response, response_data = char.get_multiple_characters('0, 827')
 

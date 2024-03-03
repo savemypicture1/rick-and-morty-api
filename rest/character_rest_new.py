@@ -51,8 +51,8 @@ class Characters():
         self.response = requests.get(f'{self.URL}?page={page_number}')
         self.response_data = self.response.json()
 
-    def check_error_message(self):
-        assert self.response_data['error'] == 'There is nothing here', 'Wrong error message'
+    def check_error_message(self, message):
+        assert self.response_data['error'] == message, 'Wrong error message'
 
     def get_character_by_id(self, id):
         self.response = requests.get(f'{self.URL}/{id}')
@@ -62,16 +62,17 @@ class Characters():
         assert self.response_data['id'] == id, 'Wrong character id'
 
     def get_multiple_characters(self, ids):
-        response = requests.get(f'{self.URL}/{ids}')
-        response_data = response.json()
-        if response.status_code == 200:
-            requested_ids = []
-            ArrayCharacter(**{'items': response_data})
-            for char in response_data:
-                requested_ids.append(char['id'])
-            assert requested_ids == ids
+        self.response = requests.get(f'{self.URL}/{ids}')
+        self.response_data = self.response.json()
 
-        return response, response_data
+    def validate_multiple_characters(self):
+        ArrayCharacter(**{'items': self.response_data})
+
+    def check_response_multiple_ids(self, ids):
+        requested_ids = []
+        for char in self.response_data:
+            requested_ids.append(char['id'])
+        assert requested_ids == ids, 'Ids does not match'
 
     def filter_by_name(self, name):
         response = requests.get(f'{self.URL}?name={name}')
@@ -81,6 +82,10 @@ class Characters():
             ArrayCharacter(**{'items': response_data['results']})
 
         return response, response_data
+
+    def filter_by_name(self, name):
+        self.response = requests.get(f'{self.URL}?name={name}')
+        self.response_data = self.response.json()
 
     def filter_by_name_page(self, page, name):
         response = requests.get(f'{self.URL}?page={page}&name={name}')
@@ -93,7 +98,7 @@ class Characters():
             for char in response_data['results']:
                 names.append(char['name'])
             for requested_name in names:
-                assert requested_name == name
+                assert requested_name == name, 'Name does not match'
 
         return response, response_data
 
@@ -108,7 +113,7 @@ class Characters():
             for char in response_data['results']:
                 statuses.append(char['status'])
             for requested_status in statuses:
-                assert requested_status == status
+                assert requested_status == status, 'Status does not match'
 
         return response, response_data
 
@@ -123,7 +128,7 @@ class Characters():
             for char in response_data['results']:
                 statuses.append(char['status'])
             for requested_status in statuses:
-                assert requested_status == status
+                assert requested_status == status, 'Status does not match'
 
         return response, response_data
 
@@ -138,7 +143,7 @@ class Characters():
             for char in response_data['results']:
                 species.append(char['species'])
             for requested_specie in species:
-                assert requested_specie == specie
+                assert requested_specie == specie, 'Species does not match'
 
         return response, response_data
 
@@ -153,7 +158,7 @@ class Characters():
             for char in response_data['results']:
                 species.append(char['species'])
             for requested_specie in species:
-                assert requested_specie == specie
+                assert requested_specie == specie, 'Species does not match'
 
         return response, response_data
 
@@ -186,7 +191,7 @@ class Characters():
             for char in response_data['results']:
                 genders.append(char['gender'])
             for requested_gender in genders:
-                assert requested_gender == gender
+                assert requested_gender == gender, 'Genders does not match'
 
         return response, response_data
 
@@ -201,7 +206,7 @@ class Characters():
             for char in response_data['results']:
                 genders.append(char['gender'])
             for requested_gender in genders:
-                assert requested_gender == gender
+                assert requested_gender == gender, 'Genders does not match'
 
         return response, response_data
 
