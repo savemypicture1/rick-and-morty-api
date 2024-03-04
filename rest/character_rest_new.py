@@ -75,62 +75,31 @@ class Characters():
         assert requested_ids == ids, 'Ids does not match'
 
     def filter_by_name(self, name):
-        response = requests.get(f'{self.URL}?name={name}')
-        response_data = response.json()
-        if response.status_code == 200:
-            InfoSchema(**response_data['info'])
-            ArrayCharacter(**{'items': response_data['results']})
-
-        return response, response_data
-
-    def filter_by_name(self, name):
         self.response = requests.get(f'{self.URL}?name={name}')
         self.response_data = self.response.json()
 
-    def filter_by_name_page(self, page, name):
-        response = requests.get(f'{self.URL}?page={page}&name={name}')
-        response_data = response.json()
+    def check_response_filter_by_name(self, name):
+        for char in self.response_data['results']:
+            assert char['name'] == name, 'Wrong character name'
 
-        if response.status_code == 200:
-            names = []
-            InfoSchema(**response_data['info'])
-            ArrayCharacter(**{'items': response_data['results']})
-            for char in response_data['results']:
-                names.append(char['name'])
-            for requested_name in names:
-                assert requested_name == name, 'Name does not match'
-
-        return response, response_data
+    def filter_by_name_with_page(self, page, name):
+        self.response = requests.get(f'{self.URL}?page={page}&name={name}')
+        self.response_data = self.response.json()
 
     def filter_by_status(self, status):
-        response = requests.get(f'{self.URL}?status={status}')
-        response_data = response.json()
+        self.response = requests.get(f'{self.URL}?status={status}')
+        self.response_data = self.response.json()
 
-        if response.status_code == 200:
-            statuses = []
-            InfoSchema(**response_data['info'])
-            ArrayCharacter(**{'items': response_data['results']})
-            for char in response_data['results']:
-                statuses.append(char['status'])
-            for requested_status in statuses:
-                assert requested_status == status, 'Status does not match'
+    def check_response_filter_by_status(self, status):
+        statuses = []
+        for char in self.response_data['results']:
+            statuses.append(char['status'])
+        for requested_status in statuses:
+            assert requested_status == status, 'Status does not match'
 
-        return response, response_data
-
-    def filter_by_status_page(self, page, status):
-        response = requests.get(f'{self.URL}?page={page}&status={status}')
-        response_data = response.json()
-
-        if response.status_code == 200:
-            statuses = []
-            InfoSchema(**response_data['info'])
-            ArrayCharacter(**{'items': response_data['results']})
-            for char in response_data['results']:
-                statuses.append(char['status'])
-            for requested_status in statuses:
-                assert requested_status == status, 'Status does not match'
-
-        return response, response_data
+    def filter_by_status_with_page(self, page, status):
+        self.response = requests.get(f'{self.URL}?page={page}&status={status}')
+        self.response_data = self.response.json()
 
     def filter_by_species(self, specie):
         response = requests.get(f'{self.URL}?species={specie}')

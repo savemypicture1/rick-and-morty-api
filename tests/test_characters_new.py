@@ -122,153 +122,156 @@ def test_get_invalid_multiple_characters():
 # FILTER CHARACTERS BY NAME
 def test_filter_by_name():
     name = Characters()
-    response, response_data = name.filter_by_name('Rick Sanchez')
-    for char in response_data['results']:
-        assert char['name'] == 'Rick Sanchez', 'Wrong character name'
-
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 4, 'Wrong count characters'
-    assert response_data['info']['pages'] == 1, 'Wrong count pages'
-    assert response_data['info']['next'] is None, 'Next page is available'
-    assert response_data['info']['prev'] is None, 'Next page is available'
-    assert len(response_data['results']) == 4, 'Wrong count characters on page'
-
-
-def test_filter_by_name():
-    name = Characters()
     name.filter_by_name('Rick Sanchez')
     name.validate_response_data_info()
     name.validate_response_data_results()
-    for char in response_data['results']:
-        assert char['name'] == 'Rick Sanchez', 'Wrong character name'
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 4, 'Wrong count characters'
-    assert response_data['info']['pages'] == 1, 'Wrong count pages'
-    assert response_data['info']['next'] is None, 'Next page is available'
-    assert response_data['info']['prev'] is None, 'Next page is available'
-    assert len(response_data['results']) == 4, 'Wrong count characters on page'
+    name.check_response_filter_by_name('Rick Sanchez')
+    name.check_status_code(200)
+    name.check_response_data_info_count(4)
+    name.check_response_data_info_pages(1)
+    name.check_next_page_is_none()
+    name.check_prev_page_is_none()
+    name.check_count_of_items_in_results(4)
 
 
 def test_filter_by_name_with_incorrect_page():
     name = Characters()
-    response, response_data = name.filter_by_name_page(2, 'Rick Sanchez')
+    name.filter_by_name_with_page(2, 'Rick Sanchez')
 
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+    name.check_status_code(404)
+    name.check_error_message('There is nothing here')
 
 
 def test_filter_by_incorrect_name():
     name = Characters()
-    response, response_data = name.filter_by_name('qwerty1234')
+    name.filter_by_name('qwerty1234')
 
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+    name.check_status_code(404)
+    name.check_error_message('There is nothing here')
 
 
 # FILTER CHARACTERS BY STATUS
 def test_filter_by_alive_status():
     status = Characters()
-    response, response_data = status.filter_by_status('Alive')
+    status.filter_by_status('Alive')
+    status.validate_response_data_info()
+    status.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 439, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 22, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is None, 'Prev page is available'
-    assert response_data['info']['next'] is not None, 'Next page is available'
-    assert len(response_data['results']) == 20, 'Wrong count characters on page'
+    status.check_response_filter_by_status('Alive')
+    status.check_status_code(200)
+    status.check_response_data_info_count(439)
+    status.check_response_data_info_pages(22)
+    status.check_prev_page_is_none()
+    status.check_next_page_is_not_none()
+    status.check_count_of_items_in_results(20)
 
 
 def test_filter_by_alive_status_last_page():
     status = Characters()
-    response, response_data = status.filter_by_status_page(22, 'Alive')
+    status.filter_by_status_with_page(22, 'Alive')
+    status.validate_response_data_info()
+    status.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 439, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 22, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is not None, 'Prev page is available'
-    assert response_data['info']['next'] is None, 'Next page is available'
-    assert len(response_data['results']) == 19, 'Wrong count characters on page'
+    status.check_response_filter_by_status('Alive')
+    status.check_status_code(200)
+    status.check_response_data_info_count(439)
+    status.check_response_data_info_pages(22)
+    status.check_prev_page_is_not_none()
+    status.check_next_page_is_none()
+    status.check_count_of_items_in_results(19)
 
 
 def test_filter_by_alive_status_with_incorrect_page():
     status = Characters()
-    response, response_data = status.filter_by_status_page(23, 'Alive')
+    status.filter_by_status_with_page(23, 'Alive')
 
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+    status.check_status_code(404)
+    status.check_error_message('There is nothing here')
 
 
 def test_filter_by_dead_status():
     status = Characters()
-    response, response_data = status.filter_by_status('Dead')
+    status.filter_by_status('Dead')
+    status.validate_response_data_info()
+    status.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 287, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 15, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is None, 'Prev page is available'
-    assert response_data['info']['next'] is not None, 'Next page is available'
-    assert len(response_data['results']) == 20, 'Wrong count characters on page'
+    status.check_response_filter_by_status('Dead')
+    status.check_status_code(200)
+    status.check_response_data_info_count(287)
+    status.check_response_data_info_pages(15)
+    status.check_prev_page_is_none()
+    status.check_next_page_is_not_none()
+    status.check_count_of_items_in_results(20)
 
 
 def test_filter_by_dead_status_last_page():
     status = Characters()
-    response, response_data = status.filter_by_status_page(15, 'Dead')
+    status.filter_by_status_with_page(15, 'Dead')
+    status.validate_response_data_info()
+    status.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 287, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 15, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is not None, 'Prev page is available'
-    assert response_data['info']['next'] is None, 'Next page is available'
-    assert len(response_data['results']) == 7, 'Wrong count characters on page'
+    status.check_response_filter_by_status('Dead')
+    status.check_status_code(200)
+    status.check_response_data_info_count(287)
+    status.check_response_data_info_pages(15)
+    status.check_prev_page_is_not_none()
+    status.check_next_page_is_none()
+    status.check_count_of_items_in_results(7)
 
 
 def test_filter_by_dead_status_with_incorrect_page():
     status = Characters()
-    response, response_data = status.filter_by_status_page(16, 'Dead')
+    status.filter_by_status_with_page(16, 'Dead')
 
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+    status.check_status_code(404)
+    status.check_error_message('There is nothing here')
 
 
 def test_filter_by_unknown_status():
     status = Characters()
-    response, response_data = status.filter_by_status('unknown')
+    status.filter_by_status('unknown')
+    status.validate_response_data_info()
+    status.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 100, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 5, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is None, 'Prev page is available'
-    assert response_data['info']['next'] is not None, 'Next page is available'
-    assert len(response_data['results']) == 20, 'Wrong count characters on page'
+    status.check_response_filter_by_status('unknown')
+    status.check_status_code(200)
+    status.check_response_data_info_count(100)
+    status.check_response_data_info_pages(5)
+    status.check_prev_page_is_none()
+    status.check_next_page_is_not_none()
+    status.check_count_of_items_in_results(20)
 
 
 def test_filter_by_unknown_status_last_page():
     status = Characters()
-    response, response_data = status.filter_by_status_page(5, 'unknown')
+    status.filter_by_status_with_page(5, 'unknown')
+    status.validate_response_data_info()
+    status.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 100, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 5, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is not None, 'Prev page is available'
-    assert response_data['info']['next'] is None, 'Next page is available'
-    assert len(response_data['results']) == 20, 'Wrong count characters on page'
+    status.check_response_filter_by_status('unknown')
+    status.check_status_code(200)
+    status.check_response_data_info_count(100)
+    status.check_response_data_info_pages(5)
+    status.check_prev_page_is_not_none()
+    status.check_next_page_is_none()
+    status.check_count_of_items_in_results(20)
 
 
 def test_filter_by_unknown_status_with_incorrect_page():
     status = Characters()
-    response, response_data = status.filter_by_status_page(6, 'unknown')
+    status.filter_by_status_with_page(6, 'unknown')
 
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+    status.check_status_code(404)
+    status.check_error_message('There is nothing here')
 
 
 def test_filter_by_incorrect_status():
     status = Characters()
-    response, response_data = status.filter_by_status('qwerty1234')
+    status.filter_by_status('qwerty1234')
 
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+    status.check_status_code(404)
+    status.check_error_message('There is nothing here')
 
 
 # FILTER CHARACTERS BY SPECIES
