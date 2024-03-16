@@ -138,7 +138,7 @@ class Characters():
         return response, response_data
 
     def filter_by_type_page(self, page, type):
-        response = requests.get(f'{self.URL}?page={page}&species={type}')
+        response = requests.get(f'{self.URL}?page={page}&type={type}')
         response_data = response.json()
         if response.status_code == 200:
             InfoSchema(**response_data['info'])

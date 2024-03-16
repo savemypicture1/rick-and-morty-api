@@ -280,7 +280,7 @@ def test_filter_by_species_with_incorrect_page():
 
 def test_filter_by_incorrect_species():
     specie = Characters()
-    response, response_data = specie.filter_by_status('qwerty1234')
+    response, response_data = specie.filter_by_species('qwerty1234')
 
     assert response.status_code == 404, 'Wrong status code'
     assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
@@ -309,7 +309,7 @@ def test_filter_by_type_with_incorrect_page():
 
 def test_filter_by_incorrect_type():
     type = Characters()
-    response, response_data = type.filter_by_type_page(2, 'qwerty1234')
+    response, response_data = type.filter_by_type('qwerty1234')
 
     assert response.status_code == 404, 'Wrong status code'
     assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'

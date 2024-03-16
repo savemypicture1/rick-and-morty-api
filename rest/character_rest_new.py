@@ -102,46 +102,30 @@ class Characters():
         self.response_data = self.response.json()
 
     def filter_by_species(self, specie):
-        response = requests.get(f'{self.URL}?species={specie}')
-        response_data = response.json()
+        self.response = requests.get(f'{self.URL}?species={specie}')
+        self.response_data = self.response.json()
 
-        if response.status_code == 200:
-            species = []
-            InfoSchema(**response_data['info'])
-            ArrayCharacter(**{'items': response_data['results']})
-            for char in response_data['results']:
-                species.append(char['species'])
-            for requested_specie in species:
-                assert requested_specie == specie, 'Species does not match'
+    def check_response_filter_by_species(self, specie):
+        species = []
+        for char in self.response_data['results']:
+            species.append(char['species'])
+        for requested_specie in species:
+            assert requested_specie == specie, 'Species does not match'
 
-        return response, response_data
-
-    def filter_by_species_page(self, page, specie):
-        response = requests.get(f'{self.URL}?page={page}&species={specie}')
-        response_data = response.json()
-
-        if response.status_code == 200:
-            species = []
-            InfoSchema(**response_data['info'])
-            ArrayCharacter(**{'items': response_data['results']})
-            for char in response_data['results']:
-                species.append(char['species'])
-            for requested_specie in species:
-                assert requested_specie == specie, 'Species does not match'
-
-        return response, response_data
+    def filter_by_species_with_page(self, page, specie):
+        self.response = requests.get(f'{self.URL}?page={page}&species={specie}')
+        self.response_data = self.response.json()
 
     def filter_by_type(self, type):
-        response = requests.get(f'{self.URL}?type={type}')
-        response_data = response.json()
-        if response.status_code == 200:
-            InfoSchema(**response_data['info'])
-            ArrayCharacter(**{'items': response_data['results']})
+        self.response = requests.get(f'{self.URL}?type={type}')
+        self.response_data = self.response.json()
 
-        return response, response_data
+    def filter_by_type_with_page(self, page, type):
+        self.response = requests.get(f'{self.URL}?page={page}&type={type}')
+        self.response_data = self.response.json()
 
     def filter_by_type_page(self, page, type):
-        response = requests.get(f'{self.URL}?page={page}&species={type}')
+        response = requests.get(f'{self.URL}?page={page}&type={type}')
         response_data = response.json()
         if response.status_code == 200:
             InfoSchema(**response_data['info'])

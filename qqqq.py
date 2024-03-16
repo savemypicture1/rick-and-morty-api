@@ -8,25 +8,25 @@ from schemas.pydantic_schemas.character import CharacterSchema, ArrayCharacter
 from schemas.pydantic_schemas.info import InfoSchema
 from utils.randomize_int import CharacterRandomize
 
-randomizer = CharacterRandomize()
-
-character = Characters()
-ids = randomizer.generate_random_multiple_ids()
-character.get_multiple_characters(ids)
-character.validate_multiple_characters()
-print(ids)
-print(type(ids))
-print(character)
+# randomizer = CharacterRandomize()
+#
+# character = Characters()
+# ids = randomizer.generate_random_multiple_ids()
+# character.get_multiple_characters(ids)
+# character.validate_multiple_characters()
+# print(ids)
+# print(type(ids))
+# print(character)
 
 # assert response.status_code == 200, 'Wrong status code'
 # assert len(response_data) == len(ids), 'Wrong count characters'
 
 
-# response = requests.get('https://rickandmortyapi.com/api/location?name=Pawn Shop Planet')
-# response_data = response.json()
-# print(response.status_code)
-# pprint(response_data['results'][0]['name'])
-# assert response_data['results'][0]['name'] == 'Pawn Shop Planet'
+response = requests.get('https://rickandmortyapi.com/api/character/?type=Cromulon')
+response_data = response.json()
+print(response.status_code)
+pprint(response_data)
+
 
 
 # response = requests.get('https://rickandmortyapi.com/api/character?name=Rick Sanchez')

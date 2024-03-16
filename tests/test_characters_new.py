@@ -277,71 +277,79 @@ def test_filter_by_incorrect_status():
 # FILTER CHARACTERS BY SPECIES
 def test_filter_by_species():
     specie = Characters()
-    response, response_data = specie.filter_by_species('Animal')
+    specie.filter_by_species('Animal')
+    specie.validate_response_data_info()
+    specie.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 55, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 3, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is None, 'Prev page is available'
-    assert response_data['info']['next'] is not None, 'Next page is available'
-    assert len(response_data['results']) == 20, 'Wrong count characters on page'
+    specie.check_response_filter_by_species('Animal')
+    specie.check_status_code(200)
+    specie.check_response_data_info_count(55)
+    specie.check_response_data_info_pages(3)
+    specie.check_prev_page_is_none()
+    specie.check_next_page_is_not_none()
+    specie.check_count_of_items_in_results(20)
 
 
 def test_filter_by_species_last_page():
     specie = Characters()
-    response, response_data = specie.filter_by_species_page(3, 'Animal')
+    specie.filter_by_species_with_page(3, 'Animal')
+    specie.validate_response_data_info()
+    specie.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 55, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 3, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is not None, 'Prev page is available'
-    assert response_data['info']['next'] is None, 'Next page is available'
-    assert len(response_data['results']) == 15, 'Wrong count characters on page'
+    specie.check_response_filter_by_species('Animal')
+    specie.check_status_code(200)
+    specie.check_response_data_info_count(55)
+    specie.check_response_data_info_pages(3)
+    specie.check_prev_page_is_not_none()
+    specie.check_next_page_is_none()
+    specie.check_count_of_items_in_results(15)
 
 
 def test_filter_by_species_with_incorrect_page():
     specie = Characters()
-    response, response_data = specie.filter_by_species_page(4, 'Animal')
+    specie.filter_by_species_with_page(4, 'Animal')
 
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+    specie.check_status_code(404)
+    specie.check_error_message('There is nothing here')
 
 
 def test_filter_by_incorrect_species():
     specie = Characters()
-    response, response_data = specie.filter_by_status('qwerty1234')
+    specie.filter_by_species('qwerty1234')
 
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+    specie.check_status_code(404)
+    specie.check_error_message('There is nothing here')
 
 
 # FILTER CHARACTERS BY TYPE
 def test_filter_by_type():
     type = Characters()
-    response, response_data = type.filter_by_type('Cromulon')
+    type.filter_by_type('Cromulon')
+    type.validate_response_data_info()
+    type.validate_response_data_results()
 
-    assert response.status_code == 200, 'Wrong status code'
-    assert response_data['info']['count'] == 1, 'Wrong count characters in info'
-    assert response_data['info']['pages'] == 1, 'Wrong count pages in info'
-    assert response_data['info']['prev'] is None, 'Prev page is available'
-    assert response_data['info']['next'] is None, 'Next page is available'
-    assert len(response_data['results']) == 1, 'Wrong count characters on page'
+    type.check_status_code(200)
+    type.check_response_data_info_count(1)
+    type.check_response_data_info_pages(1)
+    type.check_prev_page_is_none()
+    type.check_next_page_is_none()
+    type.check_count_of_items_in_results(1)
 
 
 def test_filter_by_type_with_incorrect_page():
     type = Characters()
-    response, response_data = type.filter_by_type_page(2, 'Cromulon')
+    type.filter_by_type_with_page(2, 'Cromulon')
 
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+    type.check_status_code(404)
+    type.check_error_message('There is nothing here')
 
 
 def test_filter_by_incorrect_type():
     type = Characters()
-    response, response_data = type.filter_by_type_page(2, 'qwerty1234')
+    type.filter_by_type('qwerty1234')
 
-    assert response.status_code == 404, 'Wrong status code'
-    assert response_data['error'] == 'There is nothing here', 'Wrong/No error message'
+    type.check_status_code(404)
+    type.check_error_message('There is nothing here')
 
 
 # FILTER CHARACTERS BY GENDER
